@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buddhi AI | বুদ্ধি AI</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .app {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 22px; }
+    h1 span { color: #38bdf8; }
+    .lang-btn {
+      background: #38bdf8;
+      color: #04263a;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .chat {
+      height: 380px;
+      overflow-y: auto;
+      background: rgba(0,0,0,.25);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .user {
+      align-self: flex-end;
+      background: #38bdf8;
+      color: #04263a;
+      border-bottom-right-radius: 4px;
+    }
+    .ai {
+      align-self: flex-start;
+      background: rgba(255,255,255,.12);
+      border-bottom-left-radius: 4px;
+    }
+    form {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    input {
+      flex: 1;
+      padding: 13px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(0,0,0,.25);
+      color: white;
+      font-size: 15px;
+    }
+    button {
+      padding: 13px 18px;
+      border: none;
+      border-radius: 12px;
+      background: #22c55e;
+      color: #052e16;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .note { font-size: 12px; opacity: .7; margin-top: 10px; text-align: center; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1 id="title">Buddhi <span>AI</span></h1>
+      <button class="lang-btn" id="langBtn">English</button>
+    </header>
+
+    <div class="chat" id="chat"></div>
+
+    <form id="chatForm">
+      <input id="userInput" autocomplete="off" placeholder="আপনার প্রশ্ন লিখুন..." />
+      <button id="sendBtn" type="submit">পাঠান</button>
+    </form>
+
+    <p class="note" id="note">ডেমো ভার্সন — API key যোগ করলে সত্যিকারের AI উত্তর আসবে।</p>
+  </main>
+
+  <script>
+    const text = {
+      bn: {
+        title: 'বুদ্ধি <span>AI</span>',
+        placeholder: 'আপনার প্রশ্ন লিখুন...',
+        send: 'পাঠান',
+        welcome: 'আসসালামু আলাইকুম! আমি বুদ্ধি AI। আপনি কী জানতে চান?',
+        demo: 'এটি এখন ডেমো উত্তর। সত্যিকারের AI চালু করতে একটি AI API যুক্ত করতে হবে।',
+        note: 'ডেমো ভার্সন — API key যোগ করলে সত্যিকারের AI উত্তর আসবে।',
+        toggle: 'English'
+      },
+      en: {
+        title: 'Buddhi <span>AI</span>',
+        placeholder: 'Type your question...',
+        send: 'Send',
+        welcome: 'Hello! I am Buddhi AI. What would you like to know?',
+        demo: 'This is a demo response. Connect an AI API to enable real answers.',
+        note: 'Demo version — add an API key for real AI answers.',
+        toggle: 'বাংলা'
+      }
+    };
+
+    let lang = 'bn';
+    const chat = document.getElementById('chat');
+
+    function addMessage(content, who) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + who;
+      div.textContent = content;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function setLanguage(newLang) {
+      lang = newLang;
+      const t = text[lang];
+      document.getElementById('title').innerHTML = t.title;
+      document.getElementById('userInput').placeholder = t.placeholder;
+      document.getElementById('sendBtn').textContent = t.send;
+      document.getElementById('note').textContent = t.note;
+      document.getElementById('langBtn').textContent = t.toggle;
+    }
+
+    document.getElementById('langBtn').addEventListener('click', () => {
+      setLanguage(lang === 'bn' ? 'en' : 'bn');
+    });
+
+    document.getElementById('chatForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('userInput');
+      const question = input.value.trim();
+      if (!question) return;
+
+      addMessage(question, 'user');
+      input.value = '';
+
+      setTimeout(() => {
+        addMessage(text[lang].demo, 'ai');
+      }, 600);
+    });
+
+    addMessage(text.bn.welcome, 'ai');
+  </script>
+</body>
+</html>
